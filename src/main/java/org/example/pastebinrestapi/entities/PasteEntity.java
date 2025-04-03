@@ -15,12 +15,7 @@ import java.time.Instant;
 public class PasteEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pastes_seq")
-    @SequenceGenerator(
-            name = "pastes_seq",
-            sequenceName = "pastes_seq",
-            allocationSize = 50
-    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(nullable = false)
@@ -30,10 +25,16 @@ public class PasteEntity {
     private String content;
 
     @Builder.Default
+    @Column(name = "created_at", updatable = false)
     private Instant createdAt = Instant.now();
 
+    @Column(name = "updated_at", updatable = false)
     private Instant updatedAt;
 
+    @Column(name = "is_private")
     private boolean isPrivate = false;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private UserEntity user;
 }

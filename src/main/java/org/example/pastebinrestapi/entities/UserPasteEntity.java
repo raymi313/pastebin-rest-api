@@ -3,6 +3,8 @@ package org.example.pastebinrestapi.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Entity
 @Getter
 @Setter
@@ -12,29 +14,24 @@ import lombok.*;
 @Table(name = "user_pastes")
 public class UserPasteEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_pastes_seq")
-    @SequenceGenerator(
-            name = "user_pastes_seq",
-            sequenceName = "user_pastes_seq",
-            allocationSize = 50
-    )
-    private Long id;
+    @EmbeddedId
+    private UserPasteId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @MapsId("userId")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "paste_id")
+    @MapsId("pasteId")
+    @JoinColumn(name = "paste_id", referencedColumnName = "id")
     private PasteEntity paste;
 
-    @Getter
-    @Setter
-    @Embeddable
-    @AllArgsConstructor
+    @Data
     @NoArgsConstructor
-    public static class UserPasteId {
+    @AllArgsConstructor
+    @Embeddable
+    public static class UserPasteId implements Serializable {
         private Long userId;
         private Long pasteId;
     }

@@ -7,7 +7,7 @@ import org.example.pastebinrestapi.entities.UserEntity;
 
 public class UserDtoFactory {
 
-    UserRequestDto makeUserRequestDto(UserEntity entity){
+    public UserRequestDto makeUserRequestDto(UserEntity entity){
         return UserRequestDto.builder()
                 .username(entity.getUsername())
                 .password(entity.getPassword())
@@ -15,7 +15,7 @@ public class UserDtoFactory {
                 .build();
     }
 
-    UserResponseDto makeUserResponseDto(UserEntity entity){
+    public UserResponseDto makeUserResponseDto(UserEntity entity){
         return UserResponseDto.builder()
                 .id(entity.getId())
                 .username(entity.getUsername())
@@ -26,7 +26,7 @@ public class UserDtoFactory {
                 .build();
     }
 
-    UserLoginRequestDto makeUserLoginRequestDto(UserEntity entity){
+    public UserLoginRequestDto makeUserLoginRequestDto(UserEntity entity){
         return  UserLoginRequestDto.builder()
                 .username(entity.getUsername())
                 .password(entity.getPassword())

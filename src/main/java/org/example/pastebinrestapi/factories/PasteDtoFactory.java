@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PasteDtoFactory {
 
-    PasteRequestDto makePastRequestDto(PasteEntity entity){
+    public PasteRequestDto makePastRequestDto(PasteEntity entity){
         return PasteRequestDto.builder()
                 .id(entity.getId())
                 .content(entity.getContent())
@@ -20,7 +20,7 @@ public class PasteDtoFactory {
                 .build();
     }
 
-    PasteResponseDto makePastResponseDto(PasteEntity entity){
+    public PasteResponseDto makePastResponseDto(PasteEntity entity){
         return PasteResponseDto.builder()
                 .id(entity.getId())
                 .title(entity.getTitle())
@@ -31,7 +31,7 @@ public class PasteDtoFactory {
                 .build();
     }
 
-    PasteShortResponseDto makePastShortResponseDto(PasteEntity entity){
+    public PasteShortResponseDto makePastShortResponseDto(PasteEntity entity){
         return PasteShortResponseDto.builder()
                 .id(entity.getId())
                 .content(entity.getContent())
