@@ -4,7 +4,9 @@ import org.example.pastebinrestapi.dto.UserDto.UserLoginRequestDto;
 import org.example.pastebinrestapi.dto.UserDto.UserRequestDto;
 import org.example.pastebinrestapi.dto.UserDto.UserResponseDto;
 import org.example.pastebinrestapi.entities.UserEntity;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserDtoFactory {
 
     public UserRequestDto makeUserRequestDto(UserEntity entity){

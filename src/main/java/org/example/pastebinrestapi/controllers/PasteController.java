@@ -36,7 +36,6 @@ public class PasteController {
     public static final String FETCH_PASTE = "/api/pastes";
     public static final String DELETE_PASTE = "/api/pastes/{paste_id}";
     public static final String CREATE_OR_UPDATE_PASTE = "/api/pastes";
-    private final ControllerHelper controllerHelper;
 
     @GetMapping(FETCH_PASTE)
     public List<PasteShortResponseDto> fetchPastes(@RequestParam(value = "title",required = false) Optional<String> prefixTitle){
@@ -67,7 +66,7 @@ public class PasteController {
         }
 
         final PasteEntity paste = optionalPasteId
-                .map(controllerHelper::getPasteOrThrowException)
+                .map(helper::getPasteOrThrowException)
                 .orElseGet(() -> PasteEntity.builder().build());
 
         pasteUpdatedAt = Instant.now();
@@ -90,15 +89,15 @@ public class PasteController {
         });
 
         optionalPasteContent.ifPresent( pasteContent ->{
-            pasteRepository.findByContent(pasteContent)
-                    .filter(anotherPaste -> !Objects.equals(anotherPaste.getId(),paste.getId()))
-                    .ifPresent(
-                            anotherPaste -> {
-                                throw new BadRequestException(
-                                        String.format("Paste already exist", pasteContent)
-                                );
-                            }
-                    );
+                    pasteRepository.findByContent(pasteContent)
+                            .filter(anotherPaste -> !Objects.equals(anotherPaste.getId(),paste.getId()))
+                            .ifPresent(
+                                anotherPaste -> {
+                                        throw new BadRequestException(
+                                                String.format("Paste already exist", pasteContent)
+                                        );
+                                    }
+                            );
 
             paste.setContent(pasteContent);
 

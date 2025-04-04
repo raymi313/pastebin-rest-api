@@ -2,6 +2,7 @@ package org.example.pastebinrestapi.dto.UserDto;
 
 
 import lombok.*;
+import org.springframework.stereotype.Component;
 
 @Data
 @Builder

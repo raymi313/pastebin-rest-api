@@ -8,6 +8,8 @@ import org.example.pastebinrestapi.exceptions.NotFoundException;
 import org.example.pastebinrestapi.repositories.PasteRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Transactional
 @Component
 @RequiredArgsConstructor
