@@ -28,8 +28,8 @@ public class PasteEntity {
     @Column(name = "created_at", updatable = false)
     private Instant createdAt = Instant.now();
 
-    @Column(name = "updated_at", updatable = false)
-    private Instant updatedAt;
+    @Column(name = "updated_at")
+    private Instant updatedAt  = Instant.now();
 
     @Column(name = "is_private")
     private boolean isPrivate = false;

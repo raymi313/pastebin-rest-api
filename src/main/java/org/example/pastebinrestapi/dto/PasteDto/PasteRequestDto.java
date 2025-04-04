@@ -30,7 +30,7 @@ public class PasteRequestDto {
 
     @NonNull
     @JsonProperty("updated_at")
-    private Instant updatedAt;
+    private Instant updatedAt  = Instant.now();
 
     private boolean isPrivate = false;
 }
