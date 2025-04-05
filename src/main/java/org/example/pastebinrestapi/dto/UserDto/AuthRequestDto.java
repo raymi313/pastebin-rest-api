@@ -1,21 +1,14 @@
 package org.example.pastebinrestapi.dto.UserDto;
 
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRequestDto {
-
-    @NonNull
+public class AuthRequestDto {
     private String username;
-
-    @NonNull
-    private String email;
-
-    @NonNull
     private String password;
-
+    private String email;
 }

@@ -10,7 +10,7 @@ import org.example.pastebinrestapi.repositories.PasteRepository;
 import org.example.pastebinrestapi.repositories.UserRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
+
 
 @Transactional
 @Component
