@@ -18,4 +18,5 @@ public class UserRequestDto {
 
     @NonNull
     private String password;
+
 }

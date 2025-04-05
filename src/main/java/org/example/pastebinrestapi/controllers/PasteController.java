@@ -79,7 +79,7 @@ public class PasteController {
                             .ifPresent(
                                     anotherPaste -> {
                                         throw new BadRequestException(
-                                                String.format("Paste already exist", pasteTitle)
+                                                String.format("Paste '%s' already exist", pasteTitle)
                                         );
                                     }
                             );
@@ -94,7 +94,7 @@ public class PasteController {
                             .ifPresent(
                                 anotherPaste -> {
                                         throw new BadRequestException(
-                                                String.format("Paste already exist", pasteContent)
+                                                String.format("Paste '%s' already exist", pasteContent)
                                         );
                                     }
                             );
