@@ -7,18 +7,15 @@ import org.example.pastebinrestapi.dto.AckDto;
 import org.example.pastebinrestapi.dto.PasteDto.PasteRequestDto;
 import org.example.pastebinrestapi.dto.PasteDto.PasteShortResponseDto;
 import org.example.pastebinrestapi.entities.PasteEntity;
-import org.example.pastebinrestapi.entities.UserEntity;
-import org.example.pastebinrestapi.entities.UserPasteEntity;
 import org.example.pastebinrestapi.exceptions.BadRequestException;
 import org.example.pastebinrestapi.factories.PasteDtoFactory;
 import org.example.pastebinrestapi.repositories.PasteRepository;
 import org.example.pastebinrestapi.repositories.UserPasteRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -55,18 +52,16 @@ public class PasteController {
     }
 
     @PutMapping(CREATE_OR_UPDATE_PASTE)
-    public PasteRequestDto createOrUpdatePaste(
-            @RequestParam(value = "title", required = false) Optional<String> optionalPasteTitle,
-            @RequestParam(value = "paste_id", required = false) Optional<Long> optionalPasteId,
-            @RequestParam(value = "content", required = false) Optional<String> optionalPasteContent,
-            @RequestParam(value = "is_private", required = false) Boolean pasteIsPrivate) {
+    public PasteRequestDto createOrUpdatePaste(@RequestParam(value = "title", required = false) Optional<String> optionalPasteTitle,
+                                               @RequestParam(value = "paste_id", required = false) Optional<Long> optionalPasteId,
+                                               @RequestParam(value = "content", required = false) Optional<String> optionalPasteContent,
+                                               @RequestParam(value = "is_private", required = false) Boolean pasteIsPrivate,
+                                               Instant pasteUpdatedAt){
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserEntity currentUser = (UserEntity) authentication.getPrincipal();
 
         optionalPasteTitle = optionalPasteTitle.filter(title -> !title.trim().isEmpty());
 
-        if (!optionalPasteId.isPresent() && !optionalPasteTitle.isPresent()) {
+        if (!optionalPasteId.isPresent() && !optionalPasteTitle.isPresent()){
             throw new BadRequestException("Paste title can't be empty");
         }
 
@@ -74,26 +69,44 @@ public class PasteController {
                 .map(helper::getPasteOrThrowException)
                 .orElseGet(() -> PasteEntity.builder().build());
 
+        pasteUpdatedAt = Instant.now();
         paste.setPrivate(pasteIsPrivate);
-        paste.setUpdatedAt(Instant.now());
+        paste.setUpdatedAt(pasteUpdatedAt);
 
-        optionalPasteTitle.ifPresent(paste::setTitle);
-        optionalPasteContent.ifPresent(paste::setContent);
+        optionalPasteTitle.ifPresent( pasteTitle ->{
+                    pasteRepository.findByTitle(pasteTitle)
+                            .filter(anotherPaste -> !Objects.equals(anotherPaste.getId(),paste.getId()))
+                            .ifPresent(
+                                    anotherPaste -> {
+                                        throw new BadRequestException(
+                                                String.format("Paste '%s' already exist", pasteTitle)
+                                        );
+                                    }
+                            );
+
+            paste.setTitle(pasteTitle);
+
+        });
+
+        optionalPasteContent.ifPresent( pasteContent ->{
+                    pasteRepository.findByContent(pasteContent)
+                            .filter(anotherPaste -> !Objects.equals(anotherPaste.getId(),paste.getId()))
+                            .ifPresent(
+                                anotherPaste -> {
+                                        throw new BadRequestException(
+                                                String.format("Paste '%s' already exist", pasteContent)
+                                        );
+                                    }
+                            );
+
+            paste.setContent(pasteContent);
+
+        });
 
         final PasteEntity savedEntity = pasteRepository.save(paste);
 
-        if (!optionalPasteId.isPresent()) {
-            UserPasteEntity userPaste = UserPasteEntity.builder()
-                    .id(new UserPasteEntity.UserPasteId(currentUser.getId(), savedEntity.getId()))
-                    .user(currentUser)
-                    .paste(savedEntity)
-                    .build();
-            userPasteRepository.save(userPaste);
-        }
-
         return pasteDtoFactory.makePastRequestDto(savedEntity);
     }
-
 
     @DeleteMapping(DELETE_PASTE)
     public AckDto deletePaste(@PathVariable("paste_id") Long pasteId){
