@@ -21,7 +21,7 @@ public class PasteEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2500)
     private String content;
 
     @Builder.Default
